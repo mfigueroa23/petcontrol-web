@@ -1,3 +1,61 @@
-/* You can add global styles to this file, and also import other style files */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import 'tailwindcss/utilities.css';
 
-@import 'tailwindcss';
+@import '@spartan-ng/brain/hlm-tailwind-preset.css';
+
+/*
+ * Tema de spartan/ui según los wireframes de Control de Mascotas (SDD sección 8.1, ADR-015).
+ * Solo modo claro: los wireframes no definen modo oscuro.
+ */
+:root {
+  color-scheme: light;
+
+  --font-sans: 'Jost', system-ui, sans-serif;
+
+  --radius: 0rem;
+
+  --background: #fff8ec;
+  --foreground: #1f211c;
+  --card: #fff8ec;
+  --card-foreground: #1f211c;
+  --popover: #fff8ec;
+  --popover-foreground: #1f211c;
+  --primary: #546b41;
+  --primary-foreground: #fff8ec;
+  --secondary: #dcccac;
+  --secondary-foreground: #1f211c;
+  --muted: #dcccac;
+  --muted-foreground: #5f5a4c;
+  --accent: #dcccac;
+  --accent-foreground: #1f211c;
+  --destructive: #1f211c;
+  --border: #dcccac;
+  --input: #546b41;
+  --ring: #546b41;
+
+  --chart-1: #546b41;
+  --chart-2: #1f211c;
+  --chart-3: #dcccac;
+  --chart-4: #3d4f2f;
+  --chart-5: #5f5a4c;
+
+  --sidebar: #fff8ec;
+  --sidebar-foreground: #1f211c;
+  --sidebar-primary: #546b41;
+  --sidebar-primary-foreground: #fff8ec;
+  --sidebar-accent: #dcccac;
+  --sidebar-accent-foreground: #1f211c;
+  --sidebar-border: #dcccac;
+  --sidebar-ring: #546b41;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
