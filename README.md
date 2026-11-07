@@ -1,59 +1,77 @@
-# Web
+# Control de Mascotas - Web
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.5.
+Aplicación web en Angular de Control de Mascotas. Se comunica con `petcontrol-api`
+mediante su API REST y se publica como una imagen de Nginx que sirve archivos
+estáticos (SDD 5.5).
 
-## Development server
+## Requisitos
 
-To start a local development server, run:
+- Node.js 26
+- pnpm 12 (versión fijada en el campo `packageManager` de `package.json`)
+- Docker, para construir la imagen y ejecutar las pruebas de sistema
 
-```bash
-ng serve
-```
+## Comandos
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+| Comando        | Descripción                                                       |
+| -------------- | ----------------------------------------------------------------- |
+| `pnpm install` | Instala las dependencias.                                         |
+| `pnpm start`   | Servidor de desarrollo en `http://localhost:4200/`.               |
+| `pnpm build`   | Compila la aplicación en `dist/web/browser`.                      |
+| `pnpm test`    | Pruebas unitarias con Vitest.                                     |
+| `pnpm lint`    | Revisa el código con ESLint.                                      |
+| `pnpm format`  | Aplica el formato de Prettier (`pnpm format:check` lo comprueba). |
+| `pnpm e2e`     | Pruebas de sistema con Playwright contra el contenedor web.       |
 
-## Code scaffolding
+## Imagen Docker
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+El `Dockerfile` compila la aplicación con Node y pnpm, y la sirve con
+`nginxinc/nginx-unprivileged`, sin privilegios de root, en el puerto `8080`.
 
 ```bash
-ng build
+docker build -t petcontrol-web:local .
+docker run --rm -p 8080:8080 petcontrol-web:local
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+`nginx.conf` devuelve `index.html` en las rutas de Angular, expone la ruta de
+salud `/healthz` y guarda en caché por un año solo los archivos con hash en el
+nombre.
 
-## Running unit tests
+## Pruebas de sistema
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Las pruebas de `e2e/` se ejecutan con Playwright contra el contenedor web, en
+Chrome, Edge, Firefox, WebKit y a 360 px de ancho (REQ-NF-006 y REQ-NF-007).
 
 ```bash
-ng test
+docker run -d --rm -p 8080:8080 petcontrol-web:local
+pnpm exec playwright install chromium firefox webkit   # solo la primera vez
+pnpm e2e --project=chromium --project=firefox --project=webkit --project=mobile-360
 ```
 
-## Running end-to-end tests
+Para usar otra instancia, define `E2E_BASE_URL` (por defecto `http://localhost:8080`).
+El proyecto `msedge` requiere Microsoft Edge instalado (`pnpm exec playwright install msedge`).
 
-For end-to-end (e2e) testing, run:
+## Integración continua
 
-```bash
-ng e2e
-```
+El pipeline `.github/workflows/ci.yml` (CDM-3, SDD 5.4) se ejecuta en cada PR
+hacia `main` y en cada push a `main`:
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+| Job       | Descripción                                                                                                                      |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `version` | Lee la versión de `package.json` y falla si ya está publicada en Docker Hub. Cada PR debe subir la versión.                      |
+| `quality` | Comprueba el formato, revisa el código y ejecuta las pruebas unitarias.                                                          |
+| `e2e`     | Construye la imagen, levanta el contenedor y ejecuta Playwright en todos los navegadores. Guarda el reporte como artefacto.      |
+| `publish` | Solo en push a `main` y si los demás jobs se aprueban: publica la misma imagen probada con las etiquetas `<versión>` y `latest`. |
 
-## Additional Resources
+Secretos requeridos en el repositorio de GitHub:
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+| Secreto                  | Uso                                                     |
+| ------------------------ | ------------------------------------------------------- |
+| `DOCKERHUB_USERNAME`     | Usuario de Docker Hub.                                  |
+| `DOCKERHUB_TOKEN`        | Token de acceso de Docker Hub con permiso de escritura. |
+| `DOCKERHUB_ORGANIZATION` | Organización donde se publica `petcontrol-web`.         |
+
+El despliegue en el servidor mediante Twingate se configura en CDM-29.
+
+## Flujo de trabajo
+
+Las reglas de desarrollo, ramas, commits y pull requests están en [AGENTS.md](AGENTS.md).
