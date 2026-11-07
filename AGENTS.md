@@ -7,6 +7,7 @@ para la comunicacion con el backend.
 
 - Iniciar servidor de desarrollo: `ng serve`
 - Ejecutar pruebas unitarias: `ng test`
+- Ejecutar pruebas de sistema con Playwright (requiere el contenedor web en el puerto 8080): `pnpm e2e`
 - Revisar el código con ESLint: `ng lint`
 - Aplicar o comprobar el formato con Prettier: `pnpm format` / `pnpm format:check`
 
