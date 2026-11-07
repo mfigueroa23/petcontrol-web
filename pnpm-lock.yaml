@@ -215,6 +215,9 @@ importers:
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.14.0(jiti@2.7.0)(supports-color@8.1.1))
+      '@playwright/test':
+        specifier: ^1.65.0
+        version: 1.65.0
       '@spartan-ng/cli':
         specifier: 1.9.0
         version: 1.9.0(@angular-devkit/core@22.2.5(chokidar@5.0.0))(@angular-devkit/schematics@22.2.5(chokidar@5.0.0))(@angular/build@22.2.5(a821fcf7f3822d809dd85d1c54636c15))(@angular/compiler@22.2.4)(@babel/traverse@7.29.12(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(chokidar@5.0.0)(eslint@10.14.0(jiti@2.7.0)(supports-color@8.1.1))(rxjs@7.8.2)(supports-color@8.1.1)(tslib@2.9.1)
@@ -2141,6 +2144,11 @@ packages:
     peerDependencies:
       typescript: '>3.0.0'
 
+  '@playwright/test@1.65.0':
+    resolution: {integrity: sha512-iGURLGuKDLakSEl7Pgfv8h7f+XLT+V861Wfhz0zlEl5nyFuKUopdkFBPKqTllTUp06aOwPuH8iuUEb3yp3MpbQ==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   '@rolldown/binding-android-arm-eabi@1.2.15':
     resolution: {integrity: sha512-aLcgK9gIJ3YRvrrtfSBbRa27F5WrpiTaPulnFpsHPxpUHgFlSgnU4854MHwoRGEBhfRJDWCS2WQ7lIjskE9Olw==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -3723,6 +3731,16 @@ packages:
   piscina@5.3.2:
     resolution: {integrity: sha512-vv7l/mM7B9WgrhDaudIqv1x6v4LOBRYYmpWGdWushhpbCmVHp11sUB2v4hj1CAeTGXVxuZFz6xOU1RalAiPKfQ==}
     engines: {node: '>=20.x'}
+
+  playwright-core@1.65.0:
+    resolution: {integrity: sha512-vNSKgH6YqtN7cdT/L334zo0a+YwkrpicyrHJlWWPIm/Q+Nn2SWInil01oT0mbu96U4GgoRtCYQD9CzJQgju+lA==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright@1.65.0:
+    resolution: {integrity: sha512-F3AMWcR44qMBt4kq+6Kb6mX7bjGXshktKFOPULd7reED6ZJWevjbNRqysP7q+AATE9kdPEZBibex1BYsvpVoeA==}
+    engines: {node: '>=20'}
+    hasBin: true
 
   postcss-media-query-parser@0.2.3:
     resolution: {integrity: sha512-3sOlxmbKcSHMjlUXQZKQ06jOswE7oVkXPxmZdoB1r5l0q6gTFTQSHxNxOrCccElbW7dxNytifNEo8qidX2Vsig==}
@@ -6383,6 +6401,10 @@ snapshots:
       esquery: 1.7.0
       typescript: 6.0.3
 
+  '@playwright/test@1.65.0':
+    dependencies:
+      playwright: 1.65.0
+
   '@rolldown/binding-android-arm-eabi@1.2.15':
     optional: true
 
@@ -8093,6 +8115,12 @@ snapshots:
   piscina@5.3.2:
     optionalDependencies:
       '@napi-rs/nice': 1.1.1
+
+  playwright-core@1.65.0: {}
+
+  playwright@1.65.0:
+    dependencies:
+      playwright-core: 1.65.0
 
   postcss-media-query-parser@0.2.3: {}
 
